@@ -9,6 +9,7 @@ output: html_document
 # load relevant packages
 library(tidyverse)
 library(optimx)
+library(caret)
 
 # set a randomization seed
 set.seed(735)
@@ -43,6 +44,15 @@ heart.data$SleepTime <- as.numeric(heart.data$SleepTime)
 ```
 
 ```{r}
-# create train & test sets (trainControl)
+# create training data index
+trainIndex <- createDataPartition(heart.data$HeartDisease, p = .8, list = FALSE, times = 1)
+# train set
+heart.train <- heart.data[trainIndex,]
+# test set
+heart.test <- heart.data[-trainIndex,]
+
+# check that proportion of positive/negative cases are equal
+table(heart.train$HeartDisease) # 0.08559747 prop of positive cases
+table(heart.test$HeartDisease) # 0.08558742 prop of positive cases
 ```
 
