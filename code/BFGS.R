@@ -1,3 +1,6 @@
+### BFGS Optimization Algorithm
+### BIOS 735 Group 2
+
 # Helper functions
 
 # Log-likelihood Function
@@ -14,7 +17,7 @@ DLoglike <- function (X, Y, beta){
         return(d1)
 }
 
-# Since BFGS is a optimization algrithm, we need to minimize negative log-likelihood function
+# Since BFGS is a optimization algorithm, we need to minimize negative log-likelihood function
 
 grad <- function(beta){
         return(-DLoglike(X,Y,beta))
@@ -23,7 +26,7 @@ fun <- function(beta){
         return(-Loglike(X,Y,beta))
 }
 
-# BFGS Algrithm with Armijo line Search
+# BFGS Algorithm with Armijo line Search
 BFGS_Armijo <- function (x0, fun, grad, eps, maxit=1000){
         k<-0
         xk <- x0
