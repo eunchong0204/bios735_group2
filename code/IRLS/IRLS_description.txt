@@ -1,0 +1,31 @@
+Comments
+
+1. IRLS
+
+	1) d1_logli function: Calculate the first derivative of log-likelihood of Bernoulli distribution with logit link.
+		Takes X: design matrix, Y: response vector, beta: beta
+		written in Rcpp-Armadillo.
+		Not used in any function.
+	
+	2) logli function: Calculate the log-likelihood of Bernoulli distribution with logit link.
+		Takes X: design matrix, Y: response vector, beta: beta
+		written in Rcpp-Armadillo.
+	
+	3) beta_calculator: Update beta by IRLS.
+		Takes X: design matrix, Y: response vector, beta: beta
+		written in Rcpp-Armadillo
+		The equation is included in "IRLS_equations" file
+	
+	4) optim_irls: Loop the optimization process.
+		Takes X: design matrix, Y: response vector, beta: Initial beta,
+			logL: initial value of log-likelihood, eps, tolerance, maxit
+		written in R
+		The convergence criteria is the relative change of log-likelihood
+		output: beta estimates, Log-likelihood at beta estimates, iteration, eps at termination
+		
+
+2. problems I encountered
+	1) n is large, so when creating diag(w) matrix, memory allocating error showed up.
+		I used X.each_col() to avoid this issue. And it was faster as well.
+	2) When calculating inverse matrix, the speed of SVD decomposition and inv fuction in RcppArmadillo are almost the same when p=38.
+
