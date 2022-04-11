@@ -10,7 +10,7 @@ library(Rcpp)
 library(RcppArmadillo)
 
 # Working Directory
-#setwd("C:/Users/Eunchong Kang/Desktop/Spring 2022/BIOS 735/group_project")
+setwd("C:/Users/Eunchong Kang/Desktop/Spring 2022/BIOS 735/group_project/bios735_group2/code/IRLS")
 
 # Rcpp functions
 sourceCpp("IRLS_functions.cpp")
@@ -74,45 +74,37 @@ X <- model.matrix(~., data=heart.train)[,-2]
 ########## Data Import and Transformation ##########
 
 # Create function
+# X: Design matrix, Y: response, beta: Initial beta, logL=initial Log-likelihood
 optim_irls <- function(X, Y, beta, logL, eps=Inf, tol=10^-5, maxit=50) {
-        
-        # store the number of samples
-        n <- nrow(X)
-        
+
         # Iteration
         iter <- 0
-        
+
         while (eps > tol & iter < maxit) {
                 # save the previous value
                 logL0 <- logL
-                beta0 <- beta
-                
-                # subsample
-                index <- sample(1:n, size = n, replace = FALSE)
-                
+
                 # Calculate Beta(t+1)
-                beta <- beta_calculator(X[index, ], Y[index], beta)
-                
+                beta <- beta_calculator(X, Y, beta)
                 
                 # update the log likelihood
                 logL <- logli(X = X, Y = Y, beta)
                 
-                # calculate the euclidean distance, could also use the log likelihood if we wanted
-                #eps  = sqrt(sum((beta - beta0) ^ 2))
+                # calculate the relative change of log likelihood
                 eps <- abs(logL0 - logL) / abs(logL0)
                 
                 # update the iteration number
                 iter <- iter + 1
+                
+                # terminate if iter hits maxit
                 if (iter == maxit)
                         warning("Iteration limit reached without convergence")
                 
                 # print out info to keep track
-                cat(sprintf("Iter: %d logL: %.2f beta0: %.3f beta1: %.3f beta2: %.3f eps:%f\n",
-                                iter, logL, beta[1], beta[2], beta[3], eps))
+                cat(sprintf("Iter: %d logL: %.2f beta0: %.3f beta1: %.3f beta2: %.3f etc. eps:%f\n",
+                            iter, logL, beta[1], beta[2], beta[3], eps))
         }
         
-        #list_result <- list(beta, logL, iter, eps)
-        #names(list_result) <- c("beta", "Log-likelihood", "iteration", "eps")
         return(list("beta"=beta, "Log-likelihood"=logL, "iteration"=iter, "eps"=eps))
 }
 
@@ -121,8 +113,7 @@ beta <- matrix(0, ncol = 1, nrow = ncol(X))
 logL <- logli(X,Y,beta)
 
 # Run
-fit <- optim_irls(X=X, Y=Y, beta=beta, logL=logL)
+fit_irls <- optim_irls(X=X, Y=Y, beta=beta, logL=logL)
 
 # Results
-fit
-
+fit_irls
