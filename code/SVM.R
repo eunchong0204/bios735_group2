@@ -70,7 +70,7 @@ data_test <- as.data.frame(cbind(heart.test[,c(1:2,6:7,15)],c2))
 
 ## Using package caret
 ### Linear
-fit_LSVM <- train(X_train,Y_train,method = "svmLInear")
+fit_LSVM <- train(X_train,Y_train,method = "svmLinear")
 fit_LSVM$results # summary of the model fitting
 #ggplot(fit_LSVM,metrix = "Kappa")
 varImp(fitLSVM) # variable importance
