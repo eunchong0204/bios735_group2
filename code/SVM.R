@@ -56,8 +56,8 @@ table(heart.test$HeartDisease) # 0.08558742 prop of positive cases
 # convert categorica data to dummy variables
 dummies <- dummyVars(~.,data = heart.train[,c(3:5,8:14,16:18)],fullRank = TRUE)
 c2 <-predict(dummies,heart.train[,c(3:5,8:14,16:18)])
-X_train <- as.data.frame(cbind(heart.train[,c(2,6:7,15)],c2))[1:1000,]
-Y_train <- heart.train[1:1000,1]
+X_train <- as.data.frame(cbind(heart.train[,c(2,6:7,15)],c2))
+Y_train <- heart.train[,1]
 data_train <- as.data.frame(cbind(heart.train[,c(1:2,6:7,15)],c2))
 
 
