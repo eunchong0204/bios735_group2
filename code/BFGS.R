@@ -27,19 +27,29 @@ fun <- function(beta){
 }
 
 # BFGS Algorithm with Armijo line Search
+<<<<<<< HEAD
+BFGS_Armijo <- function (x0, # Start Point
+                         fun, # Objective Function
+                         grad, # 1-st Gradient
+                         eps, # Tolerance
+                         maxit=1000 # Maximum iteration times
+                         ){
+=======
 BFGS_Armijo <- function (x0, fun, grad, eps, maxit=1000){
+>>>>>>> cfd19d78e006b3b2d8853b696c23b8c93bc17821
         k<-0
         xk <- x0
-        I <- diag(rep(1,length(x0)))
-        gk <- grad(x0)
-        Hk <- I
-        res = norm(gk)
+        I <- diag(rep(1,length(x0))) # Identity Matrix
+        gk <- grad(x0) 
+        Hk <- I # Start of Hk
+        res = norm(gk) # Start Point of residual
          while (res > eps & k <= maxit){
 
                 gk <- grad(xk)
-                dk <- -Hk%*%gk
+                dk <- -Hk%*%gk # Direction of Descent
         
-                # Armijo line search
+                # Armijo line search (To find a proper step length)
+                
                 ak <-1
                 c <- 0.01
                 f0 <- fun(xk)
@@ -49,15 +59,16 @@ BFGS_Armijo <- function (x0, fun, grad, eps, maxit=1000){
                         ak <- ak/2
                         f1 <- f1 <- fun(xk+ak*dk)
                 }
-                
+                # The outputed ak is the chosen step length
                 # Get the step length ak
                 
                 x_next <- xk+ak*dk
                 sk <- x_next-xk
                 yk = grad(x_next)-grad(xk)
+                # Hk is the updated approximate of (Hessian)^-1
                 Hk = (I-(sk%*%t(yk))/as.numeric(t(sk)%*%yk))*Hk*(I-yk%*%t(sk)/as.numeric(t(sk)%*%yk))+sk%*%t(sk)/as.numeric(t(sk)%*%yk)
                 k = k+1
-                 res = abs(fun(xk)-fun(x_next))
+                res = abs(fun(xk)-fun(x_next))
                 # res = norm(gk)
                 xk = x_next
                 gk = grad(xk)
@@ -67,7 +78,9 @@ BFGS_Armijo <- function (x0, fun, grad, eps, maxit=1000){
             return(x_star)
 }
 
-# BFGS Algrithm with Frank-Wolfe line Search
+# BFGS Algorithm with Frank-Wolfe line Search
+
+# Similar as BFGS_Armijo except for the line search method.
 
 BFGS_FW <- function (x0, fun, grad, eps, maxit=1000){
         k<-0
@@ -129,12 +142,15 @@ Y <- subset.matrix(model.matrix(~HeartDisease, heart.train),select = 2)
 beta0 <- matrix(0, ncol = 1, nrow = ncol(X))
 
 start1 <- Sys.time()
-BFGS_Armijo(x0 = beta0, fun = fun, grad = grad, eps =  10^(-4), maxit=20000)
+BFGS_Armijo(x0 = beta0, fun = fun, grad = grad, eps =  10^(-5), maxit=20000)
 end1 <- Sys.time()
+print(end1-start1)
+
 
 start2 <- Sys.time()
 BFGS_FW(x0 = beta0, fun = fun, grad = grad, eps =  10^(-5), maxit=20000)
 end2 <- Sys.time()
-print(end1-start1)
+
+
 print(end2-start2)
 
