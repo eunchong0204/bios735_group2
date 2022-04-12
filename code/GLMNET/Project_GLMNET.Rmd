@@ -95,8 +95,8 @@ table(heart.test$HeartDisease) # 0.08558742 prop of positive cases
 ```{r}
 # X
 
-y= heart.train["HeartDisease"]
-
+Y= heart.train["HeartDisease"]
+y = ifelse(Y =='Yes', 1, 0)
 # set dimensions of fixed effects
 
 heart.train <- dummy_cols(heart.train, select_columns = 'Smoking')
@@ -137,8 +137,12 @@ fit_elnet = train(
 )
 fit_elnet
 
-```
 
+```
+```{r}
+fit = glmnet(X, y, alpha = 0.5, lambda=0.003960221)
+coef(fit)
+```
 ### Kappa in training dataset 
 ```{r}
 #X = subset(df.train, select = -c(HeartDisease))
