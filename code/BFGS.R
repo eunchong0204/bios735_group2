@@ -1,3 +1,6 @@
+### BFGS Optimization Algorithm
+### BIOS 735 Group 2
+
 # Helper functions
 
 # Log-likelihood Function
@@ -24,12 +27,16 @@ fun <- function(beta){
 }
 
 # BFGS Algorithm with Armijo line Search
+<<<<<<< HEAD
 BFGS_Armijo <- function (x0, # Start Point
                          fun, # Objective Function
                          grad, # 1-st Gradient
                          eps, # Tolerance
                          maxit=1000 # Maximum iteration times
                          ){
+=======
+BFGS_Armijo <- function (x0, fun, grad, eps, maxit=1000){
+>>>>>>> cfd19d78e006b3b2d8853b696c23b8c93bc17821
         k<-0
         xk <- x0
         I <- diag(rep(1,length(x0))) # Identity Matrix

@@ -11,16 +11,32 @@ Summarize results in Rmarkdown document, submitted separately from the R package
 
 - due date is actually (Saturday April 30th by 11:59 PM)
 
-```{r}
+```{r, echo=FALSE}
+# set all code chunks to not render in output (only output & text)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, warning=FALSE, message=FALSE}
 # load relevant packages (including the package we develop)
+#library(HeartDiseaseOptim) # our package
+library(tidyverse)
+library(mosaic)
+library(caret)
 
 # load heart disease dataset
+heart.data <- read.csv("~/bios735_group2/data/heart_2020_cleaned.csv") # andrew
 ```
 
 
 ### Introduction
 
 - the dataset and the question
+
+* problem being addressed (estimation of heart disease prevalence)
+* description of the dataset
+        * outcome of interest
+        * additional covariates
+* description of project aims
 
 ### Methods
 
@@ -33,3 +49,7 @@ Summarize results in Rmarkdown document, submitted separately from the R package
 ### Discussion
 
 - interpretation or possible future directions
+
+* summary of main points, conclusions
+* limitations and concerns
+* future problems to address

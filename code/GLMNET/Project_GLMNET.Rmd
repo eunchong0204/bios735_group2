@@ -1,0 +1,180 @@
+---
+title: "BIOS 735 Primary Project Code"
+author: "Group 2"
+date: "4/4/2022"
+output: html_document
+---
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+# load relevant packages
+library(tidyverse)
+library(optimx)
+library(caret)
+library(fastDummies)
+library(glmnet)
+```
+
+
+### Expression for Log Likelihood
+
+The logistic regression model of the heart disease and other variables:
+$$ 
+Logit(\boldsymbol{\beta}, \boldsymbol{X}) = log(\frac{\boldsymbol{p}}{1-\boldsymbol{p}}) = {\beta}_0 + \beta_{1}X_1 + \beta_{2}X_2 + ... + \beta_{18}X_{18}
+$$
+The $p$ denotes the probability of getting heart disease, then:
+$$ 
+ \boldsymbol{p} = \frac{e^{\boldsymbol{X}\boldsymbol{\beta}}}{1+ e^{\boldsymbol{X}\boldsymbol{\beta}}}
+$$
+
+The likelihood could be written as:
+
+$$ 
+L(\boldsymbol{\theta}) = \prod_{i=1}^n (p_i)^{I[y_i=1]}(1-p_i)^{I[y_i=0]}
+$$
+The log likelihood could be further written as:
+
+$$ 
+l(\boldsymbol{\theta}) = \sum_{i=1}^n log(p_i) y_i + log(1-p_i) (1-y_i)
+$$
+
+### Expression for logistic regression model with elastic net 
+
+```{r}
+# set a randomization seed
+set.seed(735)
+
+# load heard disease data (add your own filepath to access the data)
+heart.data <- read.csv('C:/Users/faye__000/Documents/Graduate schools/UNC/BIOS735/heart_2020_cleaned.csv')
+head(heart.data)
+str(heart.data)
+
+## data pre-processing
+# set factors as factors
+heart.data$HeartDisease <- as.factor(heart.data$HeartDisease)
+heart.data$Smoking <- as.factor(heart.data$Smoking)
+heart.data$AlcoholDrinking <- as.factor(heart.data$AlcoholDrinking)
+heart.data$Stroke <- as.factor(heart.data$Stroke)
+heart.data$DiffWalking <- as.factor(heart.data$DiffWalking)
+heart.data$Sex <- as.factor(heart.data$Sex)
+heart.data$AgeCategory <- as.factor(heart.data$AgeCategory)
+heart.data$Race <- as.factor(heart.data$Race)
+heart.data$Diabetic <- as.factor(heart.data$Diabetic)
+heart.data$PhysicalActivity <- as.factor(heart.data$PhysicalActivity)
+heart.data$GenHealth <- as.factor(heart.data$GenHealth)
+heart.data$Asthma <- as.factor(heart.data$Asthma)
+heart.data$KidneyDisease <- as.factor(heart.data$KidneyDisease)
+heart.data$SkinCancer <- as.factor(heart.data$SkinCancer)
+
+# set numerics as numeric
+heart.data$BMI <- as.numeric(heart.data$BMI)
+heart.data$PhysicalHealth <- as.numeric(heart.data$PhysicalHealth)
+heart.data$MentalHealth <- as.numeric(heart.data$MentalHealth)
+heart.data$SleepTime <- as.numeric(heart.data$SleepTime)
+
+# create training data index
+trainIndex <- createDataPartition(heart.data$HeartDisease, p = .8, list = FALSE, times = 1)
+# train set
+heart.train <- heart.data[trainIndex,]
+# test set
+heart.test <- heart.data[-trainIndex,]
+
+# check that proportion of positive/negative cases are equal
+table(heart.train$HeartDisease) # 0.08559747 prop of positive cases
+table(heart.test$HeartDisease) # 0.08558742 prop of positive cases
+```
+
+
+
+### Data process
+
+```{r}
+# X
+
+y= heart.train["HeartDisease"]
+
+# set dimensions of fixed effects
+
+heart.train <- dummy_cols(heart.train, select_columns = 'Smoking')
+heart.train <- dummy_cols(heart.train, select_columns = 'AlcoholDrinking')
+heart.train <- dummy_cols(heart.train, select_columns = 'Stroke')
+heart.train <- dummy_cols(heart.train, select_columns = 'DiffWalking')
+heart.train <- dummy_cols(heart.train, select_columns = 'Sex')
+heart.train <- dummy_cols(heart.train, select_columns = 'AgeCategory')
+heart.train <- dummy_cols(heart.train, select_columns = 'Race')
+heart.train <- dummy_cols(heart.train, select_columns = 'Diabetic')
+heart.train <- dummy_cols(heart.train, select_columns = 'PhysicalActivity')
+heart.train <- dummy_cols(heart.train, select_columns = 'GenHealth')
+heart.train <- dummy_cols(heart.train, select_columns = 'Asthma')
+heart.train <- dummy_cols(heart.train, select_columns = 'KidneyDisease')
+heart.train <- dummy_cols(heart.train, select_columns = 'SkinCancer')
+
+
+df.train = subset(heart.train, select = -c(Smoking, AlcoholDrinking, Stroke, DiffWalking, Sex, AgeCategory, Race, Diabetic, PhysicalActivity, GenHealth, Asthma, KidneyDisease, SkinCancer))
+
+X = subset(df.train, select = -c(HeartDisease))
+
+```
+
+
+
+### logistic regression with elastic net 
+```{r}
+
+set.seed(42)
+cv_5 = trainControl(method = "cv", number = 5)
+fit_elnet = train(
+  HeartDisease ~ ., data = df.train,
+  method = "glmnet",
+  type.measure='class', 
+  family='binomial',
+  trControl = cv_5,
+  tuneLength = 10
+)
+fit_elnet
+
+```
+
+### Kappa in training dataset 
+```{r}
+#X = subset(df.train, select = -c(HeartDisease))
+
+yhat <- predict.train(fit_elnet, newdata = X)
+
+confusionMatrix(data= as.factor(yhat), reference=as.factor(df.train$HeartDisease))
+
+```
+
+### ### Kappa in test dataset 
+```{r}
+
+heart.test <- dummy_cols(heart.test, select_columns = 'Smoking')
+heart.test <- dummy_cols(heart.test, select_columns = 'AlcoholDrinking')
+heart.test <- dummy_cols(heart.test, select_columns = 'Stroke')
+heart.test <- dummy_cols(heart.test, select_columns = 'DiffWalking')
+heart.test <- dummy_cols(heart.test, select_columns = 'Sex')
+heart.test <- dummy_cols(heart.test, select_columns = 'AgeCategory')
+heart.test <- dummy_cols(heart.test, select_columns = 'Race')
+heart.test <- dummy_cols(heart.test, select_columns = 'Diabetic')
+heart.test <- dummy_cols(heart.test, select_columns = 'PhysicalActivity')
+heart.test <- dummy_cols(heart.test, select_columns = 'GenHealth')
+heart.test <- dummy_cols(heart.test, select_columns = 'Asthma')
+heart.test <- dummy_cols(heart.test, select_columns = 'KidneyDisease')
+heart.test <- dummy_cols(heart.test, select_columns = 'SkinCancer')
+
+
+df.test = subset(heart.test, select = -c(Smoking, AlcoholDrinking, Stroke, DiffWalking, Sex, AgeCategory, Race, Diabetic, PhysicalActivity, GenHealth, Asthma, KidneyDisease, SkinCancer))
+
+X.test = subset(df.test, select = -c(HeartDisease))
+
+yhatt <- predict.train(fit_elnet, newdata = X.test)
+
+confusionMatrix(data= as.factor(yhatt), reference=as.factor(df.test$HeartDisease))
+
+
+```
+
