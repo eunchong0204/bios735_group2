@@ -106,7 +106,7 @@ start <- Sys.time()
 BFGS(x0 = beta0, fun = fun, grad = grad, eps =  10^(-5), maxit=20000)
 end <- Sys.time()
 
-# [1] 57980.57
+#  RESULT FROM GLM: 57980.57
 
 print(end-start)
 

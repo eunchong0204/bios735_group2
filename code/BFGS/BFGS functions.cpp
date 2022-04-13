@@ -20,5 +20,5 @@ arma::mat Hk_f(arma::mat sk, arma::mat yk, arma::mat Hk){
         arma::mat I = arma::eye<arma::mat>(n, n);
         return  (I-(sk*yk.t())/ as_scalar(sk.t()*yk)) * Hk * (I-yk*sk.t()/as_scalar(sk.t()*yk)) +
                 sk*sk.t()/as_scalar(sk.t()*yk);
-}
+} 
 
