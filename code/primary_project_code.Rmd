@@ -10,12 +10,13 @@ output: html_document
 library(tidyverse)
 library(optimx)
 library(caret)
+library(corrplot)
 
 # set a randomization seed
 set.seed(735)
 
 # load heard disease data (add your own filepath to access the data)
-heart.data <- read.csv("~/Documents/Courses in UNC/BIOS 735/bios735_group2/data/heart_2020_cleaned.csv") # andrew
+heart.data <- read.csv("~/bios735_group2/data/heart_2020_cleaned.csv") # andrew
 ```
 
 ```{r}
