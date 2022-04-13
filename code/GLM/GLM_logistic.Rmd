@@ -265,4 +265,3 @@ auc <- performance(pr, measure = "auc")
 auc <- auc@y.values[[1]]
 print(paste('AUC value:',round(auc,5)))
 ```
-
