@@ -13,7 +13,7 @@ library(RcppArmadillo)
 setwd("C:/Users/Eunchong Kang/Desktop/Spring 2022/BIOS 735/group_project/bios735_group2/code/IRLS")
 
 # Rcpp functions
-sourceCpp("IRLS_functions_v3.cpp")
+sourceCpp("IRLS_functions.cpp")
 
 
 ########## Data Import and Transformation ##########
