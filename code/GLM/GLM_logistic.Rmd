@@ -13,6 +13,7 @@ library(tidyverse)
 library(optimx)
 library(caret)
 library(MASS)
+library(ROCR)
 
 # set a randomization seed
 set.seed(735)
@@ -52,6 +53,10 @@ heart.test <- heart.data[-trainIndex,]
 # check that proportion of positive/negative cases are equal
 table(heart.train$HeartDisease) # 0.08559747 prop of positive cases
 table(heart.test$HeartDisease) # 0.08558742 prop of positive cases
+
+# save environment as R object
+#save.image(file = "HeartDataDerived.RData")
+#load("~/bios735_group2/data/HeartDataDerived.RData")
 ##### End Preliminaries #####
 ```
 
@@ -238,6 +243,112 @@ start <- Sys.time()
 model.logit.full <- glm(HeartDisease ~ ., family = "binomial", data = heart.train)
 model.logit.step <- model.logit.full %>% stepAIC(trace = FALSE)
 coef(model.logit.step)
+end <- Sys.time()
+(time.elapsed <- end-start)
+
+# print logistic regression model parameters
+summary(model.logit.step)
+
+# make model predictions (probabilities)
+model.step.preds <- predict(model.logit.step, newdata = heart.test, type='response')
+
+# assign binary classification to probabilities
+model.step.preds.binary <- ifelse(model.step.preds > 0.5, "Yes", "No")
+
+# compute misclassification error & print
+misClasificError <- mean(model.step.preds.binary != heart.test$HeartDisease)
+print(paste('Accuracy',round(1-misClasificError,5)))
+
+# compute confusion matrix for predicted vs. actual (heart disease)
+confusionMatrix(as.factor(model.step.preds.binary), as.factor(heart.test$HeartDisease), positive = "Yes")
+
+# generated ROC plot
+pr <- prediction(model.step.preds, heart.test$HeartDisease)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
+auc <- performance(pr, measure = "auc")
+auc <- auc@y.values[[1]]
+print(paste('AUC value:',round(auc,5)))
+```
+
+```{r}
+# fit logistic regression model on heart.train (backward selection)
+start <- Sys.time()
+model.logit.full <- glm(HeartDisease ~ ., family = "binomial", data = heart.train)
+model.logit.step <- step(model.logit.full, trace = 0)
+coef(model.logit.step)
+formula(model.logit.step)
+end <- Sys.time()
+(time.elapsed <- end-start)
+
+# print logistic regression model parameters
+summary(model.logit.step)
+
+# make model predictions (probabilities)
+model.step.preds <- predict(model.logit.step, newdata = heart.test, type='response')
+
+# assign binary classification to probabilities
+model.step.preds.binary <- ifelse(model.step.preds > 0.5, "Yes", "No")
+
+# compute misclassification error & print
+misClasificError <- mean(model.step.preds.binary != heart.test$HeartDisease)
+print(paste('Accuracy',round(1-misClasificError,5)))
+
+# compute confusion matrix for predicted vs. actual (heart disease)
+confusionMatrix(as.factor(model.step.preds.binary), as.factor(heart.test$HeartDisease), positive = "Yes")
+
+# generated ROC plot
+pr <- prediction(model.step.preds, heart.test$HeartDisease)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
+auc <- performance(pr, measure = "auc")
+auc <- auc@y.values[[1]]
+print(paste('AUC value:',round(auc,5)))
+```
+
+```{r}
+# fit logistic regression model on heart.train (forward selection)
+start <- Sys.time()
+model.logit.null <- glm(HeartDisease ~ 1, family = "binomial", data = heart.train)
+model.logit.step <- step(model.logit.null, trace = 0, direction = "forward")
+coef(model.logit.step)
+formula(model.logit.step)
+end <- Sys.time()
+(time.elapsed <- end-start)
+
+# print logistic regression model parameters
+summary(model.logit.step)
+
+# make model predictions (probabilities)
+model.step.preds <- predict(model.logit.step, newdata = heart.test, type='response')
+
+# assign binary classification to probabilities
+model.step.preds.binary <- ifelse(model.step.preds > 0.5, "Yes", "No")
+
+# compute misclassification error & print
+misClasificError <- mean(model.step.preds.binary != heart.test$HeartDisease)
+print(paste('Accuracy',round(1-misClasificError,5)))
+
+# compute confusion matrix for predicted vs. actual (heart disease)
+confusionMatrix(as.factor(model.step.preds.binary), as.factor(heart.test$HeartDisease), positive = "Yes")
+
+# generated ROC plot
+pr <- prediction(model.step.preds, heart.test$HeartDisease)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
+auc <- performance(pr, measure = "auc")
+auc <- auc@y.values[[1]]
+print(paste('AUC value:',round(auc,5)))
+```
+
+```{r}
+# fit logistic regression model on heart.train (forward & backward selection)
+start <- Sys.time()
+model.logit.null <- glm(HeartDisease ~ 1, family = "binomial", data = heart.train)
+model.logit.full <- glm(HeartDisease ~ ., family = "binomial", data = heart.train)
+model.logit.step <- step(model.logit.null, list(lower=formula(model.logit.null), upper = formula(model.logit.full)), trace = 0, direction = "both")
+coef(model.logit.step)
+formula(model.logit.step)
 end <- Sys.time()
 (time.elapsed <- end-start)
 
