@@ -1,0 +1,19 @@
+Package: glmLogistic
+Title: Fitting a Logistic Regression
+Version: 0.0.0.9000
+Authors@R: 
+    person("Andrew Joseph", "Walther", , "awalther@unc.edu", role = c("aut", "cre"))
+    person("Di", "Hu", , "dihu0103@ad.unc.edu", role = c("aut", "cre"))
+    person("Eunchong", "Kang", , "eunchong@email.unc.edu", role = c("aut", "cre"))
+    person("Mingwei", "Fei", , "mfei@email.unc.edu", role = c("aut", "cre"))
+    person("Wanting", "Jin", , "wt1997@live.unc.edu", role = c("aut", "cre"))
+Description: Fit a logistic regression given a design matrix and a response vector by using IRLS and BFGS method.
+License: GPL-2
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports: Rcpp (>= 1.0.8), RcppArmadillo
+Suggests: 
+    testthat (>= 3.0.0)
+LinkingTo: Rcpp, RcppArmadillo
+Config/testthat/edition: 3

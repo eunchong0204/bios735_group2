@@ -71,49 +71,13 @@ X <- model.matrix(~., data=heart.train)[,-2]
 
 
 
-########## Data Import and Transformation ##########
-
-# Create function
-# X: Design matrix, Y: response, beta: Initial beta, logL=initial Log-likelihood
-optim_irls <- function(X, Y, beta, logL, eps=Inf, tol=10^-5, maxit=50) {
-
-        # Iteration
-        iter <- 0
-
-        while (eps > tol & iter < maxit) {
-                # save the previous value
-                logL0 <- logL
-
-                # Calculate Beta(t+1)
-                beta <- beta_calculator(X, Y, beta)
-                
-                # update the log likelihood
-                logL <- logli(X = X, Y = Y, beta)
-                
-                # calculate the relative change of log likelihood
-                eps <- abs(logL0 - logL) / abs(logL0)
-                
-                # update the iteration number
-                iter <- iter + 1
-                
-                # terminate if iter hits maxit
-                if (iter == maxit)
-                        warning("Iteration limit reached without convergence")
-                
-                # print out info to keep track
-                cat(sprintf("Iter: %d logL: %.2f beta0: %.3f beta1: %.3f beta2: %.3f etc. eps:%f\n",
-                            iter, logL, beta[1], beta[2], beta[3], eps))
-        }
-        
-        return(list("beta"=beta, "Log-likelihood"=logL, "iteration"=iter, "eps"=eps))
-}
+########## Implementation ##########
 
 # Setting
 beta <- matrix(0, ncol = 1, nrow = ncol(X))
-logL <- logli(X,Y,beta)
 
 # Run
-fit_irls <- optim_irls(X=X, Y=Y, beta=beta, logL=logL)
+fit_irls <- optim_irls(X=X, Y=Y, beta=beta, tol=10^-5, maxit=50)
 
 # Results
 fit_irls
