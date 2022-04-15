@@ -1,0 +1,33 @@
+---
+title: "Exploratory Figures"
+author: "Group 2"
+date: "4/15/2022"
+output: html_document
+---
+
+### Data / Package loading
+
+```{r}
+# load relevant packages
+library(tidyverse)
+library(optimx)
+library(caret)
+library(MASS)
+library(ROCR)
+
+# set a randomization seed
+set.seed(735)
+
+# load dataset
+load("~/bios735_group2/data/HeartDataDerived.RData")
+```
+
+```{r}
+# counts of Heart disease occurrence by sex
+ggplot(data = heart.data, aes(x=factor(Sex), fill = factor(HeartDisease))) + geom_bar(position = "dodge") + theme_classic() + labs(title = "Heart disease counts by sex", x = "Sex", y = "Number of subjects", fill = "Heart Disease")  + scale_fill_discrete(labels = c("No Heart Disease", "Heart Disease"))
+```
+
+```{r}
+# counts of Heart disease occurrence by Smoking status
+ggplot(data = heart.data, aes(x=factor(Smoking), fill = factor(HeartDisease))) + geom_bar(position = "dodge") + theme_classic() + labs(title = "Heart disease counts by smoking status", x = "Smoking Status", y = "Number of subjects", fill = "Heart Disease")  + scale_fill_discrete(labels = c("No Heart Disease", "Heart Disease"))
+```
