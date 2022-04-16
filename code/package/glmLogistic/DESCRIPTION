@@ -11,7 +11,7 @@ Description: Fit a logistic regression given a design matrix and a response vect
 License: GPL-2
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports: Rcpp (>= 1.0.8), RcppArmadillo
 Suggests: 
     testthat (>= 3.0.0)

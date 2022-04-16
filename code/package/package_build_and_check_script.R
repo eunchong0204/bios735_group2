@@ -16,9 +16,9 @@ library(devtools)
 
 
 # Package loading
-load_all("C:/Users/Eunchong Kang/Desktop/Spring 2022/BIOS 735/group_project/package/glmLogistic")
+load_all("~/Documents/Courses in UNC/BIOS 735/bios735_group2/code/package/glmLogistic")
 # Documenting if needed
-setwd("C:/Users/Eunchong Kang/Desktop/Spring 2022/BIOS 735/group_project/package/glmLogistic")
+setwd("~/Documents/Courses in UNC/BIOS 735/bios735_group2/code/package/glmLogistic")
 document()
 
 
@@ -32,7 +32,7 @@ test_file("tests/testthat/test-glmLogistic.R")
 ?d1.loglik()
 ?beta.updator()
 ?optim.irls()
-
+?optim.BFGS()
 
 # Run a Example (Toy dataset)
 ## Create data
