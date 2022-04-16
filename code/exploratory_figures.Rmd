@@ -61,8 +61,20 @@ ggplot(data = heart.data, aes(x=factor(AgeCategory), fill = factor(HeartDisease)
 # distribution of BMI values by HeartDisease status
 ggplot(data = heart.data, aes(x=BMI, fill = factor(HeartDisease))) + geom_density(alpha = 0.75) + theme_classic() + labs(title = "Distribution of BMI by Heart Disease Status", fill = "Heart Disease")
 
+# distribution of BMI values by Age Category
+ggplot(data = heart.data, aes(x=BMI, fill = factor(AgeCategory))) + geom_density(alpha = 0.75) + theme_classic() + labs(title = "Distribution of BMI by Age Category", fill = "Age Category")
+
 # distribution of BMI values by Stroke status
 ggplot(data = heart.data, aes(x=BMI, fill = factor(Stroke))) + geom_density(alpha = 0.75) + theme_classic() + labs(title = "Distribution of BMI by Stroke Status", fill = "Stroke")
+
+# box plot of BMI by heart disease status
+ggplot(data = heart.data, aes(x = factor(HeartDisease), y = BMI, fill = factor(HeartDisease))) + geom_boxplot() + theme_classic() + labs(title = "Distribution of BMI by Heart Disease Status", x = "Heart Disease Status", fill = "Heart Disease")
+
+# box plot of BMI by physical activity status
+ggplot(data = heart.data, aes(x = factor(PhysicalActivity), y = BMI, fill = factor(PhysicalActivity))) + geom_boxplot() + theme_classic() + labs(title = "Distribution of BMI by Physical Activity Status", x = "Physical Activity Status", fill = "Physical Activity")
+
+# box plot of BMI by age group
+ggplot(data = heart.data, aes(x = factor(AgeCategory), y = BMI, fill = factor(AgeCategory))) + geom_boxplot() + theme_classic() + labs(title = "Distribution of BMI by Age Category", x = "Age Category", fill = "Age Category") + scale_x_discrete(guide = guide_axis(angle = 45))
 ```
 
 ```{r, message=FALSE}
