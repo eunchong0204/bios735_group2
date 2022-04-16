@@ -1,0 +1,17 @@
+Description of BFGS:
+
+	1) Loglike function: Calculate the log-likelihood of Bernoulli distribution with logit link.
+		Takes X: design matrix, Y: response vector, beta: beta
+		written in R
+	2) DLoglike function: Calculate the first derivative of log-likelihood of Bernoulli distribution with logit link.
+		Takes X: design matrix, Y: response vector, beta: beta
+		written in R
+	3) BFGS function: Optimization Algorithm for BFGS method with line search satisfy Wolfe Condition.
+	        Takes x0: start value, fun: objective function, grad: the gradient of objective function, eps: tolerance, maxit: Maximum iteration times.
+	        written in R
+	        output: Minimizer, Optimized function, iteration, eps at termination
+	        The convergence criteria is the change of log-likelihood
+	4) Hk_f function: Calculate the updated Hk.
+	        Takes yk: different between gradients(g(xk+1)-g(k)) , sk: different between values (xk+1-xk)
+	        written in Rcpp-Armadillo
+Problems: It's relatively slow. I tried to update some function write with Rcpp-Armadillo, however it doesn't work on my mac. I banchmarked the rcpp functions and r functions on the assigned desk. The gradient function (d1_logli) was faster than DLoglike, while Loglike seems faster than logli writen by rcpp.

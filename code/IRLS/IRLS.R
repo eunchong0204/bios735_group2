@@ -10,7 +10,7 @@ library(Rcpp)
 library(RcppArmadillo)
 
 # Working Directory
-setwd("C:/Users/Eunchong Kang/Desktop/Spring 2022/BIOS 735/group_project/bios735_group2/code/IRLS")
+setwd("~/Documents/Courses in UNC/BIOS 735/bios735_group2/code/IRLS/")
 
 # Rcpp functions
 sourceCpp("IRLS_functions.cpp")
@@ -77,7 +77,8 @@ X <- model.matrix(~., data=heart.train)[,-2]
 beta <- matrix(0, ncol = 1, nrow = ncol(X))
 
 # Run
+start <- Sys.time()
 fit_irls <- optim_irls(X=X, Y=Y, beta=beta, tol=10^-5, maxit=50)
-
+end <- Sys.time()
 # Results
 fit_irls

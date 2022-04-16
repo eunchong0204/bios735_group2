@@ -17,3 +17,7 @@ optim_irls <- function(X, Y, beta, tol = 10^-5, maxit = 50) {
     .Call('_glmLogistic_optim_irls', PACKAGE = 'glmLogistic', X, Y, beta, tol, maxit)
 }
 
+optim_BFGS <- function(X, Y, beta, tol = 10^-5, maxit = 10000) {
+    .Call('_glmLogistic_optim_BFGS', PACKAGE = 'glmLogistic', X, Y, beta, tol, maxit)
+}
+

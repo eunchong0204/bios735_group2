@@ -65,12 +65,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// optim_BFGS
+List optim_BFGS(arma::mat X, arma::vec Y, arma::vec beta, double tol, double maxit);
+RcppExport SEXP _glmLogistic_optim_BFGS(SEXP XSEXP, SEXP YSEXP, SEXP betaSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< double >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(optim_BFGS(X, Y, beta, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_glmLogistic_d1_logli", (DL_FUNC) &_glmLogistic_d1_logli, 3},
     {"_glmLogistic_logli", (DL_FUNC) &_glmLogistic_logli, 3},
     {"_glmLogistic_beta_updator", (DL_FUNC) &_glmLogistic_beta_updator, 3},
     {"_glmLogistic_optim_irls", (DL_FUNC) &_glmLogistic_optim_irls, 5},
+    {"_glmLogistic_optim_BFGS", (DL_FUNC) &_glmLogistic_optim_BFGS, 5},
     {NULL, NULL, 0}
 };
 
