@@ -1,13 +1,13 @@
 #' Fitting a Logistic Regression
 #'
 
-#' \code{optim.irls} is used to fit a logistic regression model by giving a design matrix, a binary response vector, and an initial beta.
-#' \code{optim.irls} uses Iterative Reweighted Least Sqaures (IRLS) to find the maximum likelihood estimates of the model.
-#' A relative change of log likelihood is used for a convergence criterion.
+#' \code{optim.IRLS} is used to fit a logistic regression model by giving a design matrix, a binary response vector, and an initial beta.
+#' \code{optim.IRLS} uses Iterative Reweighted Least Sqaures (IRLS) to find the maximum likelihood estimates of the model.
+#' A absolute change of log likelihood is used for a convergence criterion.
 #' Tolerance for convergence and a maximum iteration limit can be adjusted by arguments.
 #'
 #'
-#' @usage optim.irls(X, Y, beta, tol=10^-5, maxit=50)
+#' @usage optim.IRLS(X, Y, beta, tol=10^-10, maxit=50)
 #'
 #'
 #' @param X a design matrix. \code{X} must be of numeric type.
@@ -15,7 +15,7 @@
 #' The length of \code{Y} must be equal to the number of rows in \code{X}.
 #' @param beta an initial vector for the estimates of the parameters. \code{beta} must be of numeric type.
 #' The length of \code{beta} must be equal to the number of columns in \code{X}.
-#' @param tol tolerance for convergence. The default value is 10^-5.
+#' @param tol tolerance for convergence. The default value is 10^-10.
 #' @param maxit a maximum iteration limit. The default value is 50.
 #'
 #'
@@ -38,12 +38,12 @@
 #' beta = rep(0,3)
 #'
 #' ## Fit the model
-#' optim.irls(X=X, Y=Y, beta=beta)
+#' optim.IRLS(X=X, Y=Y, beta=beta)
 #'
 #'
 #' @importFrom Rcpp evalCpp
 #' @export
-optim.irls <- function(X, Y, beta, tol=10^-5, maxit=50){
+optim.IRLS <- function(X, Y, beta, tol=10^-10, maxit=50){
         # Check type of X, Y, and beta
         if (typeof(X) != "double" |  typeof(Y) != "double" | typeof(X) != "double"){
                 stop("At least one of input is not of numeric")

@@ -13,7 +13,7 @@ beta_updator <- function(X, Y, beta) {
     .Call('_glmLogistic_beta_updator', PACKAGE = 'glmLogistic', X, Y, beta)
 }
 
-optim_irls <- function(X, Y, beta, tol = 10^-5, maxit = 50) {
+optim_irls <- function(X, Y, beta, tol = 10^-10, maxit = 50) {
     .Call('_glmLogistic_optim_irls', PACKAGE = 'glmLogistic', X, Y, beta, tol, maxit)
 }
 

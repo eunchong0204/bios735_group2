@@ -39,7 +39,7 @@ test_file("tests/testthat/test-glmLogistic.R")
 ?loglik()
 ?d1.loglik()
 ?beta.updator()
-?optim.irls()
+?optim.IRLS()
 ?optim.BFGS()
 
 
@@ -56,10 +56,10 @@ d1.loglik(X1, Y1, beta)
 beta.updator(X1, Y1, beta)
 
 ## Execute optimizer
-optim.irls(X=X1, Y=Y1, beta=beta)
+optim.IRLS(X=X1, Y=Y1, beta=beta)
 
 ## Compare it to glm
-a <- glm(Y1 ~ X1-1, family = "binomial")
+glm(Y1 ~ X1-1, family = "binomial")
 
 
 #############################################
@@ -75,14 +75,15 @@ X <- model.matrix(~., data=heart.train)[,-2]
 beta0 <- matrix(0, ncol = 1, nrow = ncol(X))
 
 ## optim.irls function
-fit_irls <- optim.irls(X=X, Y=Y, beta=beta0)
-fit_irls$Log_Likelihood
+fit_IRLS <- optim.IRLS(X=X, Y=Y, beta=beta0)
+fit_IRLS
 
 ## glm function
 fit_glm <- glm(Y ~ X-1, family = "binomial")
+fit_glm$coefficients
 logLik(fit_glm)
 
 ## optim.BFGS function
-fit_bfgs <- optim.BFGS(X=X, Y=Y, beta=beta0, maxit=10000)
-fit_bfgs
+fit_BFGS <- optim.BFGS(X=X, Y=Y, beta=beta0, maxit=10000)
+fit_BFGS
 
