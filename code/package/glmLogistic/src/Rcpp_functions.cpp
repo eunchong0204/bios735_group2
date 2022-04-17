@@ -72,7 +72,7 @@ List optim_irls(arma::mat X,
                 logL = logli(X = X, Y = Y, beta);
 
                 // calculate the absolute change of log likelihood
-                eps = abs(logL0 - logL);
+                eps = std::abs(logL0 - logL);
 
                 // update the iteration number
                 iter = iter + 1;
@@ -185,7 +185,7 @@ List optim_BFGS(arma::mat X,
                 double f_next = -logli(X,Y,x_next);
 
                 //calculate residual
-                res = abs(f-f_next);
+                res = std::abs(f-f_next);
 
                 // update current value
                 xk = x_next;
