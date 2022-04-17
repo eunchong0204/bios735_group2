@@ -1,0 +1,63 @@
+---
+title: "Random Forest & Decision Tree"
+author: "Group 2 - Andrew"
+date: "4/16/2022"
+output: html_document
+---
+
+```{r, message=FALSE,warning=FALSE}
+# load relevant packages
+library(tidyverse)
+library(optimx)
+library(caret)
+library(MASS)
+library(ROCR)
+library(rpart)
+library(rpart.plot)
+
+# load derived data
+load("~/bios735_group2/data/HeartDataDerived.RData")
+```
+
+```{r}
+# sample observations such that there is 1 positive case for every 3 negative cases
+set.seed(735)
+idx.dat <- c(which(heart.data$HeartDisease == "Yes"),
+             sample(which(heart.data$HeartDisease == "No"), 75000))
+Heart2 <- heart.data[idx.dat,]
+table(Heart2$HeartDisease)
+```
+
+### Decision Trees
+
+```{r}
+# fit decision tree on all covariates (yes -> age>59 & worse than good health, age>69 & male & good health)
+r.fit.all <- rpart(HeartDisease ~ ., data = Heart2)
+printcp(r.fit.all)
+
+rpart.plot(r.fit.all)
+```
+
+```{r}
+# fit decision tree on smoke/diabetes/stroke (yes -> not diabetic & stroke, diabetic & stroke, and diabetic & smoker)
+r.fit.smoke <- rpart(HeartDisease ~ Smoking + Diabetic + Stroke, data = Heart2)
+printcp(r.fit.smoke)
+
+rpart.plot(r.fit.smoke)
+```
+
+```{r}
+# fit decision tree on age/sex/race (yes -> older than 69 & male)
+r.fit.age <- rpart(HeartDisease ~ AgeCategory + Sex, data = Heart2)
+printcp(r.fit.age)
+
+rpart.plot(r.fit.age)
+```
+
+### Random Forest
+
+```{r}
+trCtl <- trainControl(savePredictions=TRUE)
+fit <- train(HeartDisease ~ ., method="rf", data = Heart2, trControl=trCtl) # ~150 s
+```
+
