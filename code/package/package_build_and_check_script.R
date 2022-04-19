@@ -78,6 +78,9 @@ beta0 <- matrix(0, ncol = 1, nrow = ncol(X))
 fit_IRLS <- optim.IRLS(X=X, Y=Y, beta=beta0)
 fit_IRLS
 
+fit_irls <- optim_irls(X=X, Y=Y, beta=beta0, tol = 10^-10)
+fit_irls$Log_Likelihood
+
 ## glm function
 fit_glm <- glm(Y ~ X-1, family = "binomial")
 fit_glm$coefficients
