@@ -17,18 +17,16 @@ library(rpart.plot)
 
 # load derived data
 load("~/bios735_group2/data/HeartDataDerived.RData")
-```
 
-```{r}
 # sample observations such that there is 1 positive case for every 3 negative cases
 set.seed(735)
-idx.dat <- c(which(heart.data$HeartDisease == "Yes"),
-             sample(which(heart.data$HeartDisease == "No"), 75000))
-Heart2 <- heart.data[idx.dat,]
+idx.dat <- c(which(heart.train$HeartDisease == "Yes"),
+             sample(which(heart.train$HeartDisease == "No"), 75000))
+Heart2 <- heart.train[idx.dat,]
 table(Heart2$HeartDisease)
 ```
 
-### Decision Trees
+### Decision Trees (all covariates)
 
 ```{r}
 # fit decision tree on all covariates (yes -> age>59 & worse than good health, age>69 & male & good health)
@@ -39,25 +37,41 @@ rpart.plot(r.fit.all)
 ```
 
 ```{r}
+# make predictions on test data via trained tree
+predict.test <- predict(r.fit.all, heart.test, type = "class")
+
+# print predictions vs. true values
+table.mat <- table(heart.test$HeartDisease, predict.test)
+table.mat
+
+true.positive <- table.mat[2,2]
+true.negative <- table.mat[1,1]
+false.positive <- table.mat[1,2]
+false.negative <- table.mat[2,1]
+
+# accuracy/sensitivity/specificity
+accuracy.test <- sum(diag(table.mat)) / sum(table.mat)
+sensitivity.test <- true.positive / (true.positive+false.negative)
+specificity.test <- true.negative / (true.negative+false.positive)
+pos.predict.val <- true.positive / (true.positive+false.positive)
+
+print(paste('Accuracy for test', round(accuracy.test,3)))
+print(paste('Sensitivity for test', round(sensitivity.test,4)))
+print(paste('Specificity for test', round(specificity.test,3)))
+```
+
+### Other trees (specific covariates)
+
+```{r}
 # fit decision tree on smoke/diabetes/stroke (yes -> not diabetic & stroke, diabetic & stroke, and diabetic & smoker)
 r.fit.smoke <- rpart(HeartDisease ~ Smoking + Diabetic + Stroke, data = Heart2)
 printcp(r.fit.smoke)
 
 rpart.plot(r.fit.smoke)
-```
 
-```{r}
 # fit decision tree on age/sex/race (yes -> older than 69 & male)
 r.fit.age <- rpart(HeartDisease ~ AgeCategory + Sex, data = Heart2)
 printcp(r.fit.age)
 
 rpart.plot(r.fit.age)
 ```
-
-### Random Forest
-
-```{r}
-trCtl <- trainControl(savePredictions=TRUE)
-fit <- train(HeartDisease ~ ., method="rf", data = Heart2, trControl=trCtl) # ~150 s
-```
-
