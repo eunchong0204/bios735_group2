@@ -53,11 +53,14 @@ round(prop.table(tab1),2)
 # generated ROC plot
 pr <- prediction(model.1.preds, heart.test$HeartDisease)
 prf <- performance(pr, measure = "tpr", x.measure = "fpr")
-plot(prf)
+plot(prf, main = "TPR vs. FPR for classification of heart disease")
+
 auc <- performance(pr, measure = "auc")
 auc <- auc@y.values[[1]]
 print(paste('AUC value:',round(auc,5)))
 ```
+
+## Other Models
 
 ### Model 2 - BMI as lone covariate
 
