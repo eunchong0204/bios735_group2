@@ -24,9 +24,9 @@ load("~/bios735_group2/data/HeartDataDerived.RData")
 
 ```{r}
 ### Heart Disease ###
-# counts of Heart disease occurrence by sex
-ggplot(data = heart.data, aes(x=factor(Sex), fill = factor(HeartDisease))) + geom_bar(position = "dodge") + theme_classic() + labs(title = "Heart disease counts by sex", x = "Sex", y = "Number of subjects", fill = "Heart Disease")  + scale_fill_discrete(labels = c("No Heart Disease", "Heart Disease"))
-#ggsave("HeartDisease_Sex.png")
+# counts of Heart disease occurrence by sex (use this)
+ggplot(data = heart.data, aes(x=factor(Sex), fill = factor(HeartDisease))) + theme_classic() + labs(title = "Heart disease counts by sex", x = "Sex", y = "Number of subjects", fill = "Heart Disease")  + scale_fill_discrete(labels = c("No Heart Disease", "Heart Disease")) + geom_bar(position = "fill") + labs(y = "Proportion")
+#ggsave("HeartDisease_Sex.png", width = 8, height = 4)
 
 # counts of Heart disease occurrence by Smoking status
 ggplot(data = heart.data, aes(x=factor(Smoking), fill = factor(HeartDisease))) + geom_bar(position = "dodge") + theme_classic() + labs(title = "Heart disease counts by smoking status", x = "Smoking Status", y = "Number of subjects", fill = "Heart Disease")  + scale_fill_discrete(labels = c("No Heart Disease", "Heart Disease"))
@@ -44,9 +44,9 @@ ggplot(data = heart.data, aes(x=factor(GenHealth), fill = factor(HeartDisease)))
 
 ```{r}
 ### Heart Disease by age ###
-# facet by sex
-ggplot(data = heart.data, aes(x=factor(AgeCategory), fill = factor(HeartDisease))) + geom_bar(position = "dodge") + theme_classic() + labs(title = "Heart disease counts by age group", x = "age group", y = "Number of subjects", fill = "Heart Disease")  + scale_fill_discrete(labels = c("No Heart Disease", "Heart Disease")) + scale_x_discrete(guide = guide_axis(angle = 45)) + facet_wrap(~Sex) + coord_flip()
-#ggsave("HeartDisease_Age_Sex.png")
+# facet by sex (use this)
+ggplot(data = heart.data, aes(x=factor(AgeCategory), fill = factor(HeartDisease))) + geom_bar(position = "fill") + theme_classic() + labs(title = "Heart disease counts by age group", x = "age group", y = "Number of subjects", fill = "Heart Disease")  + scale_fill_discrete(labels = c("No Heart Disease", "Heart Disease")) + scale_x_discrete(guide = guide_axis(angle = 45)) + facet_wrap(~Sex) + coord_flip() + labs(y = "Proportion")
+#ggsave("HeartDisease_Age_Sex.png", width = 8, height = 4)
 
 # facet by smoking status
 ggplot(data = heart.data, aes(x=factor(AgeCategory), fill = factor(HeartDisease))) + geom_bar(position = "dodge") + theme_classic() + labs(title = "Heart disease counts by age group", x = "age group", y = "Number of subjects", fill = "Heart Disease")  + scale_fill_discrete(labels = c("No Heart Disease", "Heart Disease")) + facet_wrap(~Smoking) + coord_flip()
@@ -69,9 +69,9 @@ ggplot(data = heart.data, aes(x=BMI, fill = factor(AgeCategory))) + geom_density
 # distribution of BMI values by Stroke status
 ggplot(data = heart.data, aes(x=BMI, fill = factor(Stroke))) + geom_density(alpha = 0.75) + theme_classic() + labs(title = "Distribution of BMI by Stroke Status", fill = "Stroke")
 
-# box plot of BMI by heart disease status
+# box plot of BMI by heart disease status (use this)
 ggplot(data = heart.data, aes(x = factor(HeartDisease), y = BMI, fill = factor(HeartDisease))) + geom_boxplot() + theme_classic() + labs(title = "Distribution of BMI by Heart Disease Status", x = "Heart Disease Status", fill = "Heart Disease")
-#ggsave("HeartDisease_BMI.png")
+#ggsave("HeartDisease_BMI.png", width = 8, height = 4)
 
 # box plot of BMI by physical activity status
 ggplot(data = heart.data, aes(x = factor(PhysicalActivity), y = BMI, fill = factor(PhysicalActivity))) + geom_boxplot() + theme_classic() + labs(title = "Distribution of BMI by Physical Activity Status", x = "Physical Activity Status", fill = "Physical Activity")
@@ -94,6 +94,7 @@ ggplot(data = heart.data, aes(x = Race, fill = HeartDisease)) + geom_bar(positio
 # general health
 ggplot(data = heart.data, aes(x = GenHealth, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic() + scale_x_discrete(labels = c("Poor", "Fair", "Good", "Very good", "Excellent"))
 
+## Use these two figures side by side
 # smoking
 p1 <- ggplot(data = heart.data, aes(x = Smoking, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic()
 
@@ -102,7 +103,7 @@ p2 <- ggplot(data = heart.data, aes(x = AlcoholDrinking, fill = HeartDisease)) +
 
 library(patchwork)
 p1+p2
-ggsave("HeartDisease_Smoke_Drink.png", width = 5, height = 4)
+#ggsave("HeartDisease_Smoke_Drink.png", width = 8, height = 4)
 
 # difficulty walking
 ggplot(data = heart.data, aes(x = DiffWalking, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic()
@@ -131,8 +132,9 @@ ggplot(data = heart.data, aes(x = AgeCategory, fill = HeartDisease)) + geom_bar(
 # age (facet by Stroke)
 ggplot(data = heart.data, aes(x = AgeCategory, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic() + facet_wrap(~Stroke)
 
-# age (facet by diabetes)
-ggplot(data = heart.data, aes(x = AgeCategory, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic() + facet_wrap(~Diabetic)
+# age (facet by diabetes) (use this)
+ggplot(data = heart.data, aes(x = AgeCategory, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic() + facet_wrap(~Diabetic) + labs(title = "Heart disease by age and diabetes status", x = "Age Category", fill = "Heart Disease")
+#ggsave("HeartDisease_Age_Diabetes.png", width = 8, height = 4)
 
 # age (facet by sex)
 ggplot(data = heart.data, aes(x = AgeCategory, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic() + facet_wrap(~Sex)
