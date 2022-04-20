@@ -37,16 +37,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// beta_updator
-DataFrame beta_updator(arma::mat X, arma::vec Y, arma::vec beta);
-RcppExport SEXP _glmLogistic_beta_updator(SEXP XSEXP, SEXP YSEXP, SEXP betaSEXP) {
+// beta_updater
+DataFrame beta_updater(arma::mat X, arma::vec Y, arma::vec beta);
+RcppExport SEXP _glmLogistic_beta_updater(SEXP XSEXP, SEXP YSEXP, SEXP betaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
-    rcpp_result_gen = Rcpp::wrap(beta_updator(X, Y, beta));
+    rcpp_result_gen = Rcpp::wrap(beta_updater(X, Y, beta));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -84,7 +84,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_glmLogistic_d1_logli", (DL_FUNC) &_glmLogistic_d1_logli, 3},
     {"_glmLogistic_logli", (DL_FUNC) &_glmLogistic_logli, 3},
-    {"_glmLogistic_beta_updator", (DL_FUNC) &_glmLogistic_beta_updator, 3},
+    {"_glmLogistic_beta_updater", (DL_FUNC) &_glmLogistic_beta_updater, 3},
     {"_glmLogistic_optim_irls", (DL_FUNC) &_glmLogistic_optim_irls, 5},
     {"_glmLogistic_optim_BFGS", (DL_FUNC) &_glmLogistic_optim_BFGS, 5},
     {NULL, NULL, 0}

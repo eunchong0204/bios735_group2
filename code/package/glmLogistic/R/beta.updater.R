@@ -1,11 +1,11 @@
 #' Updating Parameter Values within IRLS
 #'
 #'
-#' \code{beta.updator} is used to update parameter values during IRLS iteration for fitting the logistic regression model.
-#' \code{beta.updator} takes a design matrix, a binary response vector, and a vector of the current parameters.
+#' \code{beta.updater} is used to update parameter values during IRLS iteration for fitting the logistic regression model.
+#' \code{beta.updater} takes a design matrix, a binary response vector, and a vector of the current parameters.
 #'
 #'
-#' @usage beta.updator(X, Y, beta)
+#' @usage beta.updater(X, Y, beta)
 #'
 #'
 #' @param X a design matrix. \code{X} must be of numeric type.
@@ -15,7 +15,7 @@
 #' The length of \code{beta} must be equal to the number of columns in \code{X}.
 #'
 #'
-#' @return \code{beta.updator} returns a vector of the updated parameter values for IRLS method while fitting the logistic regression model.
+#' @return \code{beta.updater} returns a vector of the updated parameter values for IRLS method while fitting the logistic regression model.
 #' The returned value has the same size as beta and is of numeric type.
 #'
 #'
@@ -30,11 +30,11 @@
 #' beta = rep(0,3)
 #'
 #' ## Calculate the updated parameters
-#' beta.updator(X=X, Y=Y, beta=beta)
+#' beta.updater(X=X, Y=Y, beta=beta)
 #'
 #' @importFrom Rcpp evalCpp
 #' @export
-beta.updator <- function(X, Y, beta){
+beta.updater <- function(X, Y, beta){
         # Check type of X, Y, and beta
         if (typeof(X) != "double" |  typeof(Y) != "double" | typeof(X) != "double"){
                 stop("At least one of input is not of numeric")
@@ -51,5 +51,5 @@ beta.updator <- function(X, Y, beta){
         }
 
         # function
-        beta_updator(X, Y, beta)
+        beta_updater(X, Y, beta)
 }

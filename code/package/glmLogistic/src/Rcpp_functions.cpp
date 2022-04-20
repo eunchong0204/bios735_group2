@@ -16,7 +16,7 @@ double logli(arma::mat X, arma::vec Y, arma::vec beta){
 }
 
 // [[Rcpp::export]]
-DataFrame beta_updator(arma::mat X, arma::vec Y, arma::vec beta){
+DataFrame beta_updater(arma::mat X, arma::vec Y, arma::vec beta){
         // calculate e^(X*beta)
         arma::vec exp_eta_t = exp(X*beta);
 
@@ -64,7 +64,7 @@ List optim_irls(arma::mat X,
                 double logL0 = logL;
 
                 // Calculate Beta(t+1) and se
-                DataFrame update = beta_updator(X, Y, beta);
+                DataFrame update = beta_updater(X, Y, beta);
                 beta = as<arma::vec>(update["Estimate"]);
                 se = as<arma::vec>(update["se"]);
 

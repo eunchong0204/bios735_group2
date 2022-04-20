@@ -9,8 +9,8 @@ logli <- function(X, Y, beta) {
     .Call('_glmLogistic_logli', PACKAGE = 'glmLogistic', X, Y, beta)
 }
 
-beta_updator <- function(X, Y, beta) {
-    .Call('_glmLogistic_beta_updator', PACKAGE = 'glmLogistic', X, Y, beta)
+beta_updater <- function(X, Y, beta) {
+    .Call('_glmLogistic_beta_updater', PACKAGE = 'glmLogistic', X, Y, beta)
 }
 
 optim_irls <- function(X, Y, beta, tol = 10^-10, maxit = 50) {

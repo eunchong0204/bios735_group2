@@ -43,25 +43,6 @@ test_file("tests/testthat/test-glmLogistic.R")
 ?optim.BFGS()
 
 
-# Run a Example (Toy dataset)
-## Create data
-dt <- mtcars
-Y1 <- dt$vs
-X1 <- cbind(rep(1, 32), dt$mpg, dt$am)
-beta = rep(0,3)
-
-## Execute helper functions
-loglik(X1,Y1,beta)
-d1.loglik(X1, Y1, beta)
-beta.updator(X1, Y1, beta)
-
-## Execute optimizer
-optim.IRLS(X=X1, Y=Y1, beta=beta)
-
-## Compare it to glm
-glm(Y1 ~ X1-1, family = "binomial")
-
-
 #############################################
 # Run our data
 
@@ -72,21 +53,50 @@ load("C:/Users/Eunchong Kang/Desktop/Spring 2022/BIOS 735/group_project/bios735_
 ## Design Matrix
 Y <- model.matrix(~., data=heart.train)[,2]
 X <- model.matrix(~., data=heart.train)[,-2]
+
+### The starting value 1
 beta0 <- matrix(0, ncol = 1, nrow = ncol(X))
 
-## optim.irls function
-fit_IRLS <- optim.IRLS(X=X, Y=Y, beta=beta0)
-fit_IRLS
+### The starting value 2
+beta02 <- matrix(0.5, ncol = 1, nrow = ncol(X))
 
-fit_irls <- optim_irls(X=X, Y=Y, beta=beta0, tol = 10^-10)
-fit_irls$Log_Likelihood
+
+## optim.irls function
+start = Sys.time() # record start time
+fit_IRLS <- optim.IRLS(X=X, Y=Y, beta=beta0)
+end = Sys.time()
+print(end - start)
+
+### does not converge
+fit_IRLS2 <- optim.IRLS(X=X, Y=Y, beta=beta02)
+
 
 ## glm function
+start = Sys.time()
 fit_glm <- glm(Y ~ X-1, family = "binomial")
-fit_glm$coefficients
-logLik(fit_glm)
+end = Sys.time()
+print(end - start)
+
 
 ## optim.BFGS function
 fit_BFGS <- optim.BFGS(X=X, Y=Y, beta=beta0, maxit=10000)
 fit_BFGS
+
+### Converge
+fit_BFGS2 <- optim.BFGS(X=X, Y=Y, beta=beta02, maxit=10000)
+fit_BFGS2
+
+
+
+# Export to excel file
+#library("openxlsx")
+
+results <- data.frame("GLM"=fit_glm$coefficients, "IRLS"=fit_IRLS$Estimate$Beta, "BFGS"=fit_BFGS$Estimate$Beta)
+row.names(results) <- names(fit_glm$coefficients)
+results_rounded <- round(results, digits = 4)
+
+max(results$GLM-result$IRLS)
+max(results$GLM-result$BFGS)
+
+#write.xlsx(results_rounded, sheetName="sheet1", file="result.xlsx", rowNames=TRUE)
 

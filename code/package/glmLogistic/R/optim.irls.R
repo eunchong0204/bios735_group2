@@ -59,6 +59,11 @@ optim.IRLS <- function(X, Y, beta, tol=10^-10, maxit=50){
                 warning("Y vector does not consist of 0 and 1")
         }
 
-        # function
-        optim_irls(X=X, Y=Y, beta=beta, tol=tol, maxit=maxit)
+        # Check Returned Value
+        value <- optim_irls(X=X, Y=Y, beta=beta, tol=tol, maxit=maxit)
+        if (sum(is.nan(value[[1]][,1])) != 0){
+                warning("Algorithm did not converge! Change the starting beta")
+        } else{
+                return(value)
+        }
 }

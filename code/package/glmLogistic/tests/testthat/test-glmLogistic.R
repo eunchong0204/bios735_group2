@@ -27,6 +27,15 @@ test_that("warning sign shows up", {
         expect_warning(optim.IRLS(X, Y, beta), "not consist of 0 and 1")
 })
 
+test_that("warning sign shows up", {
+        dt <- mtcars
+        Y <- dt$vs
+        X <- cbind(rep(1, 32), dt$mpg, dt$am)
+        beta <- rep(100,3)
+
+        expect_warning(optim.IRLS(X, Y, beta), "did not converge")
+})
+
 test_that("simple errors for bad input", {
         dt <- mtcars
         Y <- dt$vs
