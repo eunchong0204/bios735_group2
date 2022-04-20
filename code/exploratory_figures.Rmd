@@ -140,6 +140,12 @@ ggplot(data = heart.data, aes(x = AgeCategory, fill = HeartDisease)) + geom_bar(
 ggplot(data = heart.data, aes(x = AgeCategory, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic() + facet_wrap(~Sex)
 ```
 
+```{r}
+# proportion of heavy drinking by age
+ggplot(data = heart.data, aes(x=factor(AgeCategory), fill = factor(AlcoholDrinking))) + theme_classic() + labs(title = "Alcohol consumption by age group", x = "Age", y = "Number of subjects", fill = "Heavy drinker")  + scale_fill_discrete(labels = c("No", "Yes")) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45))
+#ggsave("HeartDisease_Sex.png", width = 8, height = 4)
+```
+
 ### Relative proportion calcs
 
 ```{r}
@@ -193,9 +199,5 @@ favstats(heart.data[heart.data$HeartDisease =="No",]$BMI)
 
 ```
 
-```{r}
-# counts of heavy drinking by age
-ggplot(data = heart.data, aes(x=factor(AgeCategory), fill = factor(AlcoholDrinking))) + theme_classic() + labs(title = "Alcohol consumption by age group", x = "Age", y = "Number of subjects", fill = "Alcohol consumption (heavy drinking)")  + scale_fill_discrete(labels = c("No", "Yes")) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45))
-#ggsave("HeartDisease_Sex.png", width = 8, height = 4)
-```
+
 
