@@ -140,3 +140,56 @@ ggplot(data = heart.data, aes(x = AgeCategory, fill = HeartDisease)) + geom_bar(
 ggplot(data = heart.data, aes(x = AgeCategory, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic() + facet_wrap(~Sex)
 ```
 
+### Relative proportion calcs
+
+```{r}
+# heart disease by sex
+heart.data %>%
+  group_by(Sex, HeartDisease) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+```
+
+```{r}
+# heart disease by sex & age group
+heart.data %>%
+  group_by(Sex, HeartDisease, AgeCategory) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+
+heart.data %>%
+  group_by(HeartDisease, AgeCategory) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+
+table(heart.data[heart.data$AgeCategory=="80 or older",]$HeartDisease)
+```
+
+```{r}
+# heart disease by smoking
+heart.data %>%
+  group_by(Smoking, HeartDisease) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+
+# heart disease by drinking
+heart.data %>%
+  group_by(AlcoholDrinking, HeartDisease) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+
+# heart disease by diabetes
+heart.data %>%
+  group_by(Diabetic, HeartDisease) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+```
+
+```{r}
+#BMI summary stats
+favstats(heart.data[heart.data$HeartDisease =="Yes",]$BMI)
+
+favstats(heart.data[heart.data$HeartDisease =="No",]$BMI)
+
+```
+
