@@ -42,7 +42,7 @@
 #'
 #' @importFrom Rcpp evalCpp
 #' @export
-optim.BFGS <- function(X, Y, beta, tol=10^-5, maxit=50){
+optim.BFGS <- function(X, Y, beta, tol=10^-5, maxit=1000){
 # Check type of X, Y, and beta
 if (typeof(X) != "double" |  typeof(Y) != "double" | typeof(X) != "double"){
         stop("At least one of input is not of numeric")
