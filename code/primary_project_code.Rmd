@@ -5,21 +5,30 @@ date: "4/4/2022"
 output: html_document
 ---
 
+### Load packages
+
 ```{r, message=FALSE, warning=FALSE}
 # load relevant packages
 library(tidyverse)
 library(optimx)
 library(caret)
-library(corrplot)
+library(MASS)
+library(ROCR)
+library(patchwork)
+library(mosaic)
+library(rpart)
+library(rpart.plot)
+```
 
+### 2.1 - Data Preprocessing (also found in CreateDataObject.R)
+
+```{r}
 # set a randomization seed
 set.seed(735)
 
 # load heard disease data (add your own filepath to access the data)
 heart.data <- read.csv("~/bios735_group2/data/heart_2020_cleaned.csv") # andrew
-```
 
-```{r}
 ## data pre-processing
 # set factors as factors
 heart.data$HeartDisease <- as.factor(heart.data$HeartDisease)
@@ -42,9 +51,7 @@ heart.data$BMI <- as.numeric(heart.data$BMI)
 heart.data$PhysicalHealth <- as.numeric(heart.data$PhysicalHealth)
 heart.data$MentalHealth <- as.numeric(heart.data$MentalHealth)
 heart.data$SleepTime <- as.numeric(heart.data$SleepTime)
-```
 
-```{r}
 # create training data index
 trainIndex <- createDataPartition(heart.data$HeartDisease, p = .8, list = FALSE, times = 1)
 # train set
@@ -55,5 +62,173 @@ heart.test <- heart.data[-trainIndex,]
 # check that proportion of positive/negative cases are equal
 table(heart.train$HeartDisease) # 0.08559747 prop of positive cases
 table(heart.test$HeartDisease) # 0.08558742 prop of positive cases
+```
+
+### 1.4 - Exploratory Visualizations
+
+```{r}
+### Figure 1
+# counts of Heart disease occurrence by sex
+ggplot(data = heart.data, aes(x=factor(Sex), fill = factor(HeartDisease))) + theme_classic() + labs(title = "Heart disease counts by sex", x = "Sex", y = "Number of subjects", fill = "Heart Disease")  + scale_fill_discrete(labels = c("No Heart Disease", "Heart Disease")) + geom_bar(position = "fill") + labs(y = "Proportion")
+#ggsave("HeartDisease_Sex.png", width = 8, height = 4)
+
+### Figure 2
+# Heart Disease by age & sex
+ggplot(data = heart.data, aes(x=factor(AgeCategory), fill = factor(HeartDisease))) + geom_bar(position = "fill") + theme_classic() + labs(title = "Heart disease counts by age group", x = "age group", y = "Number of subjects", fill = "Heart Disease")  + scale_fill_discrete(labels = c("No Heart Disease", "Heart Disease")) + scale_x_discrete(guide = guide_axis(angle = 45)) + facet_wrap(~Sex) + coord_flip() + labs(y = "Proportion")
+#ggsave("HeartDisease_Age_Sex.png", width = 8, height = 4)
+
+### Figure 3
+# heart disease proportion by smoking & drinking
+# smoking
+p1 <- ggplot(data = heart.data, aes(x = Smoking, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic()
+# alcohol
+p2 <- ggplot(data = heart.data, aes(x = AlcoholDrinking, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic()
+p1+p2
+#ggsave("HeartDisease_Smoke_Drink.png", width = 8, height = 4)
+
+### Figure 4
+# box plot of BMI by heart disease status
+ggplot(data = heart.data, aes(x = factor(HeartDisease), y = BMI, fill = factor(HeartDisease))) + geom_boxplot() + theme_classic() + labs(title = "Distribution of BMI by Heart Disease Status", x = "Heart Disease Status", fill = "Heart Disease")
+#ggsave("HeartDisease_BMI.png", width = 8, height = 4)
+
+### Figure 5
+# age (facet by diabetes)
+ggplot(data = heart.data, aes(x = AgeCategory, fill = HeartDisease)) + geom_bar(position = "fill") + labs(y = "Proportion") + scale_x_discrete(guide = guide_axis(angle = 45)) + theme_classic() + facet_wrap(~Diabetic) + labs(title = "Heart disease by age and diabetes status", x = "Age Category", fill = "Heart Disease")
+#ggsave("HeartDisease_Age_Diabetes.png", width = 8, height = 4)
+```
+
+```{r}
+# summary statistics for figures 1-5 (relative proportions)
+# heart disease by sex (figure 1)
+heart.data %>%
+  group_by(Sex, HeartDisease) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+
+# heart disease by sex & age group (figure 2)
+heart.data %>%
+  group_by(Sex, HeartDisease, AgeCategory) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+
+heart.data %>%
+  group_by(HeartDisease, AgeCategory) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+
+table(heart.data[heart.data$AgeCategory=="80 or older",]$HeartDisease)
+
+# heart disease by smoking (figure 3)
+heart.data %>%
+  group_by(Smoking, HeartDisease) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+
+# heart disease by drinking (figure 3)
+heart.data %>%
+  group_by(AlcoholDrinking, HeartDisease) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+
+# BMI summary stats (figure 4)
+favstats(heart.data[heart.data$HeartDisease =="Yes",]$BMI)
+
+favstats(heart.data[heart.data$HeartDisease =="No",]$BMI)
+
+# heart disease by diabetes (figure 5)
+heart.data %>%
+  group_by(Diabetic, HeartDisease) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n))
+```
+
+### 2.2 - Decision Tree
+
+```{r}
+# sample observations such that there is 1 positive case for every 3 negative cases
+idx.dat <- c(which(heart.train$HeartDisease == "Yes"),
+             sample(which(heart.train$HeartDisease == "No"), 75000))
+Heart2 <- heart.train[idx.dat,]
+table(Heart2$HeartDisease)
+
+# fit decision tree on all covariates (yes -> age>59 & worse than good health, age>69 & male & good health)
+r.fit.all <- rpart(HeartDisease ~ ., data = Heart2)
+printcp(r.fit.all)
+
+rpart.plot(r.fit.all)
+
+# make predictions on test data via trained tree
+predict.test <- predict(r.fit.all, heart.test, type = "class")
+
+# print predictions vs. true values
+table.mat <- table(heart.test$HeartDisease, predict.test)
+table.mat
+
+true.positive <- table.mat[2,2]
+true.negative <- table.mat[1,1]
+false.positive <- table.mat[1,2]
+false.negative <- table.mat[2,1]
+
+# accuracy/sensitivity/specificity
+accuracy.test <- sum(diag(table.mat)) / sum(table.mat)
+sensitivity.test <- true.positive / (true.positive+false.negative)
+specificity.test <- true.negative / (true.negative+false.positive)
+pos.predict.val <- true.positive / (true.positive+false.positive)
+
+print(paste('Accuracy for test', round(accuracy.test,3)))
+print(paste('Sensitivity for test', round(sensitivity.test,4)))
+print(paste('Specificity for test', round(specificity.test,3)))
+```
+
+### 2.3.1 & 2.3.2 - IRLS & BFGS (call library(glmLogistic) & functions here)
+
+```{r}
+
+```
+
+### 2.3.3 - Logistic Regression (GLM)
+
+```{r}
+### Model 1 ###
+# fit logistic regression model on heart.train (all covariates)
+start <- Sys.time()
+model.logit.1 <- glm(HeartDisease ~ ., family = "binomial", data = heart.train)
+end <- Sys.time()
+(time.elapsed <- end-start)
+
+# print logistic regression model parameters
+summary(model.logit.1)
+
+# make model predictions (probabilities)
+model.1.preds <- predict(model.logit.1, newdata = heart.test, type='response')
+
+# assign binary classification to probabilities
+model.1.preds.binary <- ifelse(model.1.preds > 0.5, "Yes", "No")
+
+# compute mis-classification error & print
+misClasificError <- mean(model.1.preds.binary != heart.test$HeartDisease)
+print(paste('Accuracy',round(1-misClasificError,5)))
+
+# compute confusion matrix for predicted vs. actual (heart disease)
+confusionMatrix(as.factor(model.1.preds.binary), as.factor(heart.test$HeartDisease), positive = "Yes")
+
+# table of predicted/observed proportions
+tab1 <- table(obs = as.factor(heart.test$HeartDisease), pred = as.factor(model.1.preds.binary))
+round(prop.table(tab1),2)
+
+# generated ROC plot
+pr <- prediction(model.1.preds, heart.test$HeartDisease)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf, main = "TPR vs. FPR for classification of heart disease")
+
+auc <- performance(pr, measure = "auc")
+auc <- auc@y.values[[1]]
+print(paste('AUC value:',round(auc,5)))
+```
+
+### 2.5 - RF & SVM
+
+```{r}
+
 ```
 
