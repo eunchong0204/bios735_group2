@@ -18,6 +18,11 @@ library(patchwork)
 library(mosaic)
 library(rpart)
 library(rpart.plot)
+library(Rcpp)
+library(RcppArmadillo)
+library(pROC)
+library(ranger)
+library(e1071)
 ```
 
 ### 2.1 - Data Preprocessing (also found in CreateDataObject.R)
