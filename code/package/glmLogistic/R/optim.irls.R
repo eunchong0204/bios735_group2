@@ -1,6 +1,5 @@
 #' Fitting a Logistic Regression
 #'
-
 #' \code{optim.IRLS} is used to fit a logistic regression model by giving a design matrix, a binary response vector, and an initial beta.
 #' \code{optim.IRLS} uses Iterative Reweighted Least Sqaures (IRLS) to find the maximum likelihood estimates of the model.
 #' A absolute change of log likelihood is used for a convergence criterion.
@@ -23,8 +22,8 @@
 #' \itemize{
 #' \item{\code{Estimate: } a dataframe with the estimates of parameters (\code{beta})and the estimates of its standard errors (\code{se}).}
 #' \item{\code{Log_Likelihood: } a value of the log likelihood.}
-#' \item{\code{Iteration: } the number of iterations executed for convergence.}
-#' \item{\code{eps: } the last relative change of log likelihood.}
+#' \item{\code{Iteration: } the number of iterations iterated for convergence.}
+#' \item{\code{eps: } the last relative absolute change of log likelihood.}
 #' }
 #'
 #' @examples

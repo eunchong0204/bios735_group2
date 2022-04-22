@@ -2,7 +2,7 @@
 % Please edit documentation in R/loglik.R
 \name{loglik}
 \alias{loglik}
-\title{Finding a Value of the Log-Likelihood}
+\title{Finding Log-Likelihood}
 \usage{
 loglik(X, Y, beta)
 }

@@ -38,7 +38,7 @@ test_file("tests/testthat/test-glmLogistic.R")
 # Check documenting
 ?loglik()
 ?d1.loglik()
-?beta.updator()
+?beta.updater()
 ?optim.IRLS()
 ?optim.BFGS()
 
@@ -79,11 +79,11 @@ print(end - start)
 
 
 ## optim.BFGS function
-fit_BFGS <- optim.BFGS(X=X, Y=Y, beta=beta0, maxit=10000)
+fit_BFGS <- optim.BFGS(X=X, Y=Y, beta=beta0)
 fit_BFGS
 
 ### Converge
-fit_BFGS2 <- optim.BFGS(X=X, Y=Y, beta=beta02, maxit=10000)
+fit_BFGS2 <- optim.BFGS(X=X, Y=Y, beta=beta02)
 fit_BFGS2
 
 
@@ -94,9 +94,10 @@ fit_BFGS2
 results <- data.frame("GLM"=fit_glm$coefficients, "IRLS"=fit_IRLS$Estimate$Beta, "BFGS"=fit_BFGS$Estimate$Beta)
 row.names(results) <- names(fit_glm$coefficients)
 results_rounded <- round(results, digits = 4)
+results_rounded
 
-max(results$GLM-result$IRLS)
-max(results$GLM-result$BFGS)
+max(results$GLM-results$IRLS)
+max(results$GLM-results$BFGS)
 
 #write.xlsx(results_rounded, sheetName="sheet1", file="result.xlsx", rowNames=TRUE)
 

@@ -7,7 +7,7 @@
 #' Tolerance for convergence and a maximum iteration limit can be adjusted by arguments.
 #'
 #'
-#' @usage optim.BFGS(X, Y, beta, tol=10^-5, maxit=50)
+#' @usage optim.BFGS(X, Y, beta, tol=10^-5, maxit=1000)
 #'
 #' @param X a design matrix. \code{X} must be of numeric type.
 #' @param Y a response vector. \code{Y} must consist of \code{1} and \code{0} with \code{1} representing the event.

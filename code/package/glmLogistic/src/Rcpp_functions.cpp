@@ -99,7 +99,7 @@ List optim_BFGS(arma::mat X,
                 arma::vec Y,
                 arma::vec beta,
                 double tol=10^-5,
-                double maxit=10000) {
+                double maxit=1000) {
 
         // Iteration setting
         int iter = 0;

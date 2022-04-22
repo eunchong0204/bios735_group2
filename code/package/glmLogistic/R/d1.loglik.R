@@ -1,4 +1,4 @@
-#' Finding a Value of the First Derivative of the Log-Likelihood
+#' Finding First Derivative of Log-Likelihood
 #'
 #'
 #' \code{d1.loglik} is used to find a value of the first derivative of the log-likelihood for the logistic regression model.

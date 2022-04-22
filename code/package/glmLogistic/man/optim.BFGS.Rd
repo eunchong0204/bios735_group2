@@ -4,7 +4,7 @@
 \alias{optim.BFGS}
 \title{Fitting a Logistic Regression}
 \usage{
-optim.BFGS(X, Y, beta, tol=10^-5, maxit=50)
+optim.BFGS(X, Y, beta, tol=10^-5, maxit=1000)
 }
 \arguments{
 \item{X}{a design matrix. \code{X} must be of numeric type.}
@@ -29,8 +29,8 @@ a list with the following elements:
 }
 }
 \description{
-\code{optim.irls} is used to fit a logistic regression model by giving a design matrix, a binary response vector, and an initial beta.
-\code{optim.irls} uses Broyden–Fletcher–Goldfarb–Shanno (BFGS) algorithm with line search meeting Wolfe-conditions to find the maximum likelihood estimates of the model.
+\code{optim.BFGS} is used to fit a logistic regression model by giving a design matrix, a binary response vector, and an initial beta.
+\code{optim.BFGS} uses Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm with line search meeting Wolfe-conditions to find the maximum likelihood estimates of the model.
 A change of log likelihood is used for a convergence criterion.
 Tolerance for convergence and a maximum iteration limit can be adjusted by arguments.
 }

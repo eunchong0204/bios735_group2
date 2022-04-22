@@ -1,4 +1,4 @@
-#' Finding a Value of the Log-Likelihood
+#' Finding Log-Likelihood
 #'
 #'
 #' \code{loglik} is used to find a value of the log-likelihood for the logistic regression model.

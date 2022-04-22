@@ -24,8 +24,8 @@ a list with the following elements:
 \itemize{
 \item{\code{Estimate: } a dataframe with the estimates of parameters (\code{beta})and the estimates of its standard errors (\code{se}).}
 \item{\code{Log_Likelihood: } a value of the log likelihood.}
-\item{\code{Iteration: } the number of iterations executed for convergence.}
-\item{\code{eps: } the last relative change of log likelihood.}
+\item{\code{Iteration: } the number of iterations iterated for convergence.}
+\item{\code{eps: } the last relative absolute change of log likelihood.}
 }
 }
 \description{

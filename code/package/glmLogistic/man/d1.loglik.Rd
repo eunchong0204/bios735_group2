@@ -2,7 +2,7 @@
 % Please edit documentation in R/d1.loglik.R
 \name{d1.loglik}
 \alias{d1.loglik}
-\title{Finding a Value of the First Derivative of the Log-Likelihood}
+\title{Finding First Derivative of Log-Likelihood}
 \usage{
 d1.loglik(X, Y, beta)
 }
