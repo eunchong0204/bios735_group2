@@ -23,6 +23,8 @@ library(RcppArmadillo)
 library(pROC)
 library(ranger)
 library(e1071)
+library(usethis)
+library(devtools)
 ```
 
 ### 2.1 - Data Preprocessing (also found in CreateDataObject.R)
@@ -188,6 +190,28 @@ print(paste('Specificity for test', round(specificity.test,3)))
 ### 2.3.1 & 2.3.2 - IRLS & BFGS (call library(glmLogistic) & functions here)
 
 ```{r}
+load_all("glmLogistic")
+### Model 1 ###
+# fit logistic regression model on heart.train (all covariates)
+Y <- model.matrix(~., data=heart.train)[,2]
+X <- model.matrix(~., data=heart.train)[,-2]
+
+### Set starting value
+beta0 <- matrix(0, ncol = 1, nrow = ncol(X))
+
+start <- Sys.time()
+model.irls.1 <- optim.IRLS(X=X, Y=Y, beta=beta0)
+end <- Sys.time()
+(time.elapsed <- end-start)
+
+summary(model.irls.1)
+
+start <- Sys.time()
+model.bfgs.1 <- optim.BFGS(X=X, Y=Y, beta=beta0)
+end <- Sys.time()
+(time.elapsed <- end-start)
+
+summary(model.bfgs.1)
 
 ```
 
