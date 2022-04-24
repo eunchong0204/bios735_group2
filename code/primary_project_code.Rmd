@@ -22,7 +22,6 @@ library(Rcpp)
 library(RcppArmadillo)
 library(pROC)
 library(ranger)
-library(e1071)
 library(usethis)
 library(devtools)
 ```
@@ -256,8 +255,88 @@ print(paste('AUC value:',round(auc,5)))
 ```
 
 ### 2.5 - RF & SVM
-
+## downsampling the training set ##
 ```{r}
-
+Index <- c(sample(which(heart.train$HeartDisease == "No"), sum(heart.train$HeartDisease == "Yes")), which(heart.train$HeartDisease == "Yes"))
+heart.train.RF <- heart.train[Index,]
+table(heart.train.RF$HeartDisease)
 ```
+
+## Raondom Forest Model ##
+```{r}
+# set the tuning grid
+tgrid <- expand.grid(
+  .mtry = c(2,4,6,8,10,20,30),
+  .splitrule = "gini",
+  .min.node.size = c(1,10,20)
+)
+# Fit the Random Forest Model
+time_start <- Sys.time()
+fit_RF1 <- train(HeartDisease ~ ., data = heart.train.RF, 
+                tuneGrid = tgrid,
+                method = "ranger",
+                trControl = trainControl(method = "cv",number = 5,verboseIter = TRUE,classProbs = TRUE))
+time_end <- Sys.time()
+fit_RF1
+ggplot(fit_RF1) # plot over the tuning grid
+
+## Computing time
+print(time_end - time_start)
+
+## confusion Matrix
+pred_RF <- predict(fit_RF1, heart.test)
+confusionMatrix(data = pred_RF, reference = heart.test$HeartDisease)
+
+
+## ROC curve
+library(pROC)
+# ROC for training set
+prob_t <- predict(fit_RF1, heart.train[,-1],type = "prob")
+roc <- roc(heart.train$HeartDisease,prob_t$Yes, plot = TRUE, print.auc = TRUE)
+
+# ROC for testing set
+prob_RF <- predict(fit_RF1, heart.test[,-1],type = "prob")
+roc <- roc(heart.test$HeartDisease,prob_RF$Yes, plot = TRUE, print.auc = TRUE)
+
+#save(fit_RF1,file = "fit_RF_tune.Rdata")
+```
+
+### Linear Kernel SVM model ###
+```{r}
+# convert categorica data to dummy variables
+dummies <- dummyVars(~.,data = heart.train.RF[,c(3:5,8:14,16:18)],fullRank = TRUE)
+c2 <-predict(dummies,heart.train[,c(3:5,8:14,16:18)])
+X_train <- as.data.frame(cbind(heart.train.RF[,c(2,6:7,15)],c2))
+Y_train <- heart.train.RF[,1]
+table(Y_train)
+
+dummies <- dummyVars(~.,data = heart.test[,c(3:5,8:14,16:18)],fullRank = TRUE)
+c2 <-predict(dummies,heart.test[,c(3:5,8:14,16:18)])
+X_test <- as.data.frame(cbind(heart.test[,c(2,6:7,15)],c2))
+Y_test <- heart.test[,1]
+
+# Using package caret to fit the SVM model
+train_control <- trainControl(method="repeatedcv", number=5,classProbs = TRUE)
+fit_LSVM <- train(X_train,Y_train,
+                  method = "svmLinear", 
+                  trControl = train_control, 
+                  tuneLength = 10,
+                  preProcess = c("center","scale"))
+
+fit_LSVM$results # summary of the model fitting
+
+# variable importance
+Var <- varImp(fit_LSVM)
+plot(varImp(object=fit_LSVM,scale=FALSE),top = 11,   main="Linear SVM - Variable Importance")
+
+# Confusion Matrix
+test_Lpred <- predict(fit_LSVM,newdata = X_test) # prediction for the testing data
+confusionMatrix(table(test_Lpred,Y_test)) # compute sensitivity and specificity using the testing data
+#save(fit_LSVM,file = "fit_LSVM.Rdata")
+
+# ROC curve
+prob_SVM <- predict(fit_LSVM, X_test,type = "prob") 
+roc_SVM <- roc(heart.test$HeartDisease,prob_SVM$Yes, plot = TRUE, print.auc = TRUE)
+```
+
 
