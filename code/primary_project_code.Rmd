@@ -211,7 +211,6 @@ end <- Sys.time()
 (time.elapsed <- end-start)
 
 summary(model.bfgs.1)
-
 ```
 
 ### 2.3.3 - Logistic Regression (GLM)
@@ -255,15 +254,16 @@ print(paste('AUC value:',round(auc,5)))
 ```
 
 ### 2.5 - RF & SVM
-## downsampling the training set ##
+
 ```{r}
+### Downsampling training set
 Index <- c(sample(which(heart.train$HeartDisease == "No"), sum(heart.train$HeartDisease == "Yes")), which(heart.train$HeartDisease == "Yes"))
 heart.train.RF <- heart.train[Index,]
 table(heart.train.RF$HeartDisease)
 ```
 
-## Raondom Forest Model ##
 ```{r}
+### Random forest model ###
 # set the tuning grid
 tgrid <- expand.grid(
   .mtry = c(2,4,6,8,10,20,30),
@@ -301,8 +301,9 @@ roc <- roc(heart.test$HeartDisease,prob_RF$Yes, plot = TRUE, print.auc = TRUE)
 #save(fit_RF1,file = "fit_RF_tune.Rdata")
 ```
 
-### Linear Kernel SVM model ###
+
 ```{r}
+### Linear Kernel SVM model ###
 # convert categorica data to dummy variables
 dummies <- dummyVars(~.,data = heart.train.RF[,c(3:5,8:14,16:18)],fullRank = TRUE)
 c2 <-predict(dummies,heart.train[,c(3:5,8:14,16:18)])
@@ -338,5 +339,3 @@ confusionMatrix(table(test_Lpred,Y_test)) # compute sensitivity and specificity 
 prob_SVM <- predict(fit_LSVM, X_test,type = "prob") 
 roc_SVM <- roc(heart.test$HeartDisease,prob_SVM$Yes, plot = TRUE, print.auc = TRUE)
 ```
-
-
