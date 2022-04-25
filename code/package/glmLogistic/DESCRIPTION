@@ -1,6 +1,6 @@
 Package: glmLogistic
 Title: Fitting a Logistic Regression
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: 
     person("Andrew Joseph", "Walther", , "awalther@unc.edu", role = c("aut", "cre"))
     person("Di", "Hu", , "dihu0103@ad.unc.edu", role = c("aut", "cre"))

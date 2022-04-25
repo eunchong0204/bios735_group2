@@ -101,3 +101,9 @@ max(results$GLM-results$BFGS)
 
 #write.xlsx(results_rounded, sheetName="sheet1", file="result.xlsx", rowNames=TRUE)
 
+## Make Tarball
+build("glmLogistic")
+## Install
+install.packages("glmLogistic_1.0.0.tar.gz", repos=NULL)
+## Load
+library(glmLogistic)
