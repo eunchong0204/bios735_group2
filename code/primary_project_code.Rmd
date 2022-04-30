@@ -35,6 +35,7 @@ set.seed(735)
 
 # load heard disease data (add your own filepath to access the data)
 heart.data <- read.csv("~/bios735_group2/data/heart_2020_cleaned.csv") # andrew
+heart.data <- read.csv("C:/Users/Eunchong Kang/Desktop/Spring 2022/BIOS 735/group_project/bios735_group2/data/heart_2020_cleaned.csv") # Eunchong
 
 ## data pre-processing
 # set factors as factors
@@ -190,28 +191,45 @@ print(paste('Specificity for test', round(specificity.test,3)))
 ### 2.3.1 & 2.3.2 - IRLS & BFGS (call library(glmLogistic) & functions here)
 
 ```{r}
-load_all("glmLogistic")
+# Load glmLogistic package
+load_all("package/glmLogistic")
+
 ### Model 1 ###
 # fit logistic regression model on heart.train (all covariates)
+# make a design matrix and the response vector with zeros and ones
 Y <- model.matrix(~., data=heart.train)[,2]
 X <- model.matrix(~., data=heart.train)[,-2]
 
-### Set starting value
+# Set starting value
 beta0 <- matrix(0, ncol = 1, nrow = ncol(X))
 
+# IRLS
 start <- Sys.time()
 model.irls.1 <- optim.IRLS(X=X, Y=Y, beta=beta0)
 end <- Sys.time()
 (time.elapsed <- end-start)
 
-summary(model.irls.1)
-
+# BFGS
 start <- Sys.time()
 model.bfgs.1 <- optim.BFGS(X=X, Y=Y, beta=beta0)
 end <- Sys.time()
 (time.elapsed <- end-start)
 
-summary(model.bfgs.1)
+# glm function
+start <- Sys.time()
+model.logit.1 <- glm(HeartDisease ~ ., family = "binomial", data = heart.train)
+end <- Sys.time()
+(time.elapsed <- end-start)
+# print logistic regression model parameters
+summary(model.logit.1)
+
+# Compare the results from the three functions
+est_logistic <- data.frame("GLM"=model.logit.1$coefficients, "IRLS"=model.irls.1$Estimate$Beta, "BFGS"=model.bfgs.1$Estimate$Beta)
+row.names(est_logistic) <- names(model.logit.1$coefficients)
+est_logistic_rounded <- round(est_logistic, digits = 4)
+
+# Print the result.
+est_logistic_rounded
 ```
 
 ### 2.3.3 - Logistic Regression (GLM)
@@ -219,13 +237,7 @@ summary(model.bfgs.1)
 ```{r}
 ### Model 1 ###
 # fit logistic regression model on heart.train (all covariates)
-start <- Sys.time()
-model.logit.1 <- glm(HeartDisease ~ ., family = "binomial", data = heart.train)
-end <- Sys.time()
-(time.elapsed <- end-start)
-
-# print logistic regression model parameters
-summary(model.logit.1)
+# model fitting results by glm function is stored in "model.logit.1"
 
 # make model predictions (probabilities)
 model.1.preds <- predict(model.logit.1, newdata = heart.test, type='response')
