@@ -24,16 +24,19 @@ library(devtools)
 
 ## Eunchong
 # Package loading
-load_all("C:/Users/Eunchong Kang/Desktop/Spring 2022/BIOS 735/group_project/bios735_group2/code/package/glmLogistic")
-# Documenting if needed
+load_all("package/glmLogistic")
+
+# Set the working directory as package folder
 setwd("C:/Users/Eunchong Kang/Desktop/Spring 2022/BIOS 735/group_project/bios735_group2/code/package/glmLogistic")
+
+# Documenting if needed
 document()
 
 
+#############################################
 # Check package
 check(manual=TRUE)
 test_file("tests/testthat/test-glmLogistic.R")
-
 
 # Check documenting
 ?loglik()
@@ -41,6 +44,14 @@ test_file("tests/testthat/test-glmLogistic.R")
 ?beta.updater()
 ?optim.IRLS()
 ?optim.BFGS()
+
+#############################################
+# Make Tarball
+build("glmLogistic")
+## Install
+install.packages("glmLogistic_1.0.0.tar.gz", repos=NULL)
+## Load
+library(glmLogistic)
 
 
 #############################################
@@ -87,10 +98,7 @@ fit_BFGS2 <- optim.BFGS(X=X, Y=Y, beta=beta02)
 fit_BFGS2
 
 
-
-# Export to excel file
-#library("openxlsx")
-
+### Make the comparing table
 results <- data.frame("GLM"=fit_glm$coefficients, "IRLS"=fit_IRLS$Estimate$Beta, "BFGS"=fit_BFGS$Estimate$Beta)
 row.names(results) <- names(fit_glm$coefficients)
 results_rounded <- round(results, digits = 4)
@@ -99,11 +107,4 @@ results_rounded
 max(results$GLM-results$IRLS)
 max(results$GLM-results$BFGS)
 
-#write.xlsx(results_rounded, sheetName="sheet1", file="result.xlsx", rowNames=TRUE)
 
-## Make Tarball
-build("glmLogistic")
-## Install
-install.packages("glmLogistic_1.0.0.tar.gz", repos=NULL)
-## Load
-library(glmLogistic)
