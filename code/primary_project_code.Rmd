@@ -202,6 +202,7 @@ X <- model.matrix(~., data=heart.train)[,-2]
 
 # Set starting value
 beta0 <- matrix(0, ncol = 1, nrow = ncol(X))
+beta02 <- matrix(0.5, ncol = 1, nrow = ncol(X))
 
 # IRLS
 start <- Sys.time()
@@ -209,11 +210,17 @@ model.irls.1 <- optim.IRLS(X=X, Y=Y, beta=beta0)
 end <- Sys.time()
 (time.elapsed <- end-start)
 
+## IRLS diverges when the starting of 0.5
+optim.IRLS(X=X, Y=Y, beta=beta02)
+
 # BFGS
 start <- Sys.time()
 model.bfgs.1 <- optim.BFGS(X=X, Y=Y, beta=beta0)
 end <- Sys.time()
 (time.elapsed <- end-start)
+
+## BFGS converges when the starting of 0.5
+optim.BFGS(X=X, Y=Y, beta=beta02)
 
 # glm function
 start <- Sys.time()
